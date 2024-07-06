@@ -20,3 +20,9 @@
 # Go workspace file
 go.work
 go.work.sum
+
+.env
+node_module
+tmp/
+tmp/*
+tmp
