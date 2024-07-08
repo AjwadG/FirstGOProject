@@ -22,7 +22,9 @@ go.work
 go.work.sum
 
 .env
-node_module
+client/node_module
+client/node_module/
+client/node_module/*
 tmp/
 tmp/*
 tmp
