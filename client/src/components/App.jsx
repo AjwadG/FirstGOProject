@@ -3,52 +3,32 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Todo from "./Todo";
 import CreateArea from "./CreateArea";
+import { useQuery } from "react-query";
+import API_URL from "../index";
 
 function App() {
   const [todos, setTodos] = useState([]);
 
-  function addtodo(newtodo) {
-    setTodos((prevtodos) => {
-      return [...prevtodos, newtodo];
-    });
-  }
-  function markDone(id) {
-    const newtodos = [
-      ...todos.map((todoItem, index) => {
-        if (index === id) {
-          return {
-            ...todoItem,
-            done: !todoItem.done,
-          };
-        }
-        return todoItem;
-      }),
-    ];
-    setTodos(newtodos);
-  }
-
-  function deletetodo(id) {
-    setTodos((prevtodos) => {
-      return prevtodos.filter((todoItem, index) => {
-        return index !== id;
+  useQuery("todos", () => {
+    fetch(API_URL)
+      .then((res) => res.json())
+      .then((data) => {
+        setTodos(data);
       });
-    });
-  }
+  });
 
   return (
     <div>
       <Header />
-      <CreateArea onAdd={addtodo} />
+      <CreateArea />
       {todos.map((todoItem, index) => {
         return (
           <Todo
-            key={index}
-            id={index}
+            key={todoItem.id}
+            id={todoItem.id}
             title={todoItem.title}
-            content={todoItem.content}
+            content={todoItem.body}
             done={todoItem.done}
-            onDelete={deletetodo}
-            markDone={markDone}
           />
         );
       })}

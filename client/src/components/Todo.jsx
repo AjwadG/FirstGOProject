@@ -2,15 +2,27 @@ import React from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { useMutation, useQueryClient } from "react-query";
+import API_URL from "../index";
 
 function Todo(props) {
-  function handleClick() {
-    props.onDelete(props.id);
-  }
+  const queryClient = useQueryClient();
 
-  function handleDone() {
-    props.markDone(props.id);
-  }
+  const mutationDelete = useMutation(() => {
+    fetch(`${API_URL}/${props.id}`, {
+      method: "DELETE",
+    }).then(() => {
+      queryClient.invalidateQueries("todos");
+    });
+  });
+
+  const mutationUpdate = useMutation(() => {
+    fetch(`${API_URL}/${props.id}`, {
+      method: "PUT",
+    }).then(() => {
+      queryClient.invalidateQueries("todos");
+    });
+  });
 
   return (
     <div className="todo">
@@ -28,10 +40,10 @@ function Todo(props) {
       >
         {props.content}
       </p>
-      <button onClick={handleClick}>
+      <button onClick={mutationDelete.mutate}>
         <DeleteIcon />
       </button>
-      <button onClick={handleDone}>
+      <button onClick={mutationUpdate.mutate}>
         {props.done ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
       </button>
     </div>

@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -52,6 +53,10 @@ func main() {
 
 	app := fiber.New()
 
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+	}))
+
 	app.Get("/api/todos", getTodos)
 	app.Post("/api/todos", ceateTodo)
 	app.Put("/api/todos/:id", updateTodo)
@@ -77,7 +82,7 @@ func getTodos(c *fiber.Ctx) error {
 	}
 
 	defer cursor.Close(context.Background())
-	
+
 	if err = cursor.All(context.Background(), &todos); err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"error": err.Error(),
